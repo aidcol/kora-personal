@@ -57,6 +57,34 @@ export class TrackNode {
         // Initialize position with default values
         this.#position = { x: 0, y: 0, z: 0 };
     }
+
+    get totalPlays() {
+        return this.#totalPlays;
+    }
+
+    get totalPlayTime() {
+        return this.#totalPlayTime;
+    }
+
+    get position(): Position3D {
+        return { ...this.#position };
+    }
+
+    get platformUris(): string[] {
+        return Array.from(this.#platformUris);
+    }
+
+    /** Get formatted play time as MM:SS string. */
+    getFormattedTotalTime(): string {
+        const totalSeconds = Math.floor(this.totalPlayTime / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    getAvgPlayDuration(): number {
+        return this.#totalPlays > 0 ? Math.round(this.#totalPlayTime / this.#totalPlays) : 0;
+    }
 }   
 
 // Default export for easy importing
