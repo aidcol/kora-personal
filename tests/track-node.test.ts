@@ -189,4 +189,57 @@ describe('TrackNode', () => {
             expect(node.getAvgPlayDuration()).toBe(0);
         });
     });
+
+    describe('addPlatformUri', () => {
+        let node: TrackNode;
+
+        beforeEach(() => {
+            node = new TrackNode('test-id', mockMetadata);
+        });
+
+        it('should add valid platform URI', () => {
+            const uri = 'spotify:track:4iV5W9uYEdYUVa79Axb7Rh';
+            
+            node.addPlatformUri(uri);
+            
+            expect(node.platformUris).toContain(uri);
+            expect(node.platformUris.length).toBe(1);
+        });
+
+        it('should not add duplicate URIs', () => {
+            const uri = 'spotify:track:duplicate';
+            
+            node.addPlatformUri(uri);
+            node.addPlatformUri(uri);
+            
+            expect(node.platformUris.length).toBe(1);
+        });
+
+        it('should ignore null and undefined values', () => {
+            node.addPlatformUri(null);
+            node.addPlatformUri(undefined);
+            
+            expect(node.platformUris.length).toBe(0);
+        });
+
+        it('should ignore empty string', () => {
+            node.addPlatformUri('');
+            
+            expect(node.platformUris.length).toBe(0);
+        });
+
+        it('should ignore non-string types', () => {
+            node.addPlatformUri(123 as any);
+            node.addPlatformUri({} as any);
+            
+            expect(node.platformUris.length).toBe(0);
+        });
+
+        it('should ignore whitespace-only strings', () => {
+            node.addPlatformUri('   ');
+            node.addPlatformUri('\t\n  ');
+            
+            expect(node.platformUris.length).toBe(0);
+        });
+    });
 });

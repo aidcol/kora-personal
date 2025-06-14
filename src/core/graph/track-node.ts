@@ -85,6 +85,17 @@ export class TrackNode {
     getAvgPlayDuration(): number {
         return this.#totalPlays > 0 ? Math.round(this.#totalPlayTime / this.#totalPlays) : 0;
     }
+
+    /**
+     * Add a platform URI with input validation
+     * 
+     * Optional parameter with union type string | null | undefined
+     */
+    addPlatformUri(platformUri: string | null | undefined): void {
+        if (platformUri && typeof platformUri === 'string' && platformUri.trim()) {
+            this.#platformUris.add(platformUri);
+        }
+    }
 }   
 
 // Default export for easy importing
