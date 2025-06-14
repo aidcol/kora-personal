@@ -294,4 +294,45 @@ describe('TrackNode', () => {
             expect(node.getAvgPlayDuration()).toBe(4500);
         });
     });
+
+    describe('setPosition', () => {
+        let node: TrackNode;
+
+        beforeEach(() => {
+            node = new TrackNode('test-id', mockMetadata);
+        });
+
+        it('should set valid position', () => {
+            const newPosition = { x: 10, y: 20, z: 30 };
+            
+            node.setPosition(newPosition);
+            
+            expect(node.position).toEqual(newPosition);
+        });
+
+        it('should store copy of position not reference', () => {
+            const newPosition = { x: 10, y: 20, z: 30 };
+            
+            node.setPosition(newPosition);
+            newPosition.x = 999;
+            
+            expect(node.position.x).toBe(10);
+        });
+
+        it('should ignore position with NaN values', () => {
+            const originalPosition = node.position;
+            
+            node.setPosition({ x: NaN, y: 20, z: 30 });
+            
+            expect(node.position).toEqual(originalPosition);
+        });
+
+        it('should ignore position with non-number values', () => {
+            const originalPosition = node.position;
+            
+            node.setPosition({ x: 'invalid' as any, y: 20, z: 30 });
+            
+            expect(node.position).toEqual(originalPosition);
+        });
+    });
 });

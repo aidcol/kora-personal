@@ -109,6 +109,20 @@ export class TrackNode {
             this.#totalPlayTime += msPlayed;
         }
     }
+
+    /**
+     * Set 3D position with validation (controlled access)
+     * Only the visualization system should call this method
+     */
+    setPosition(newPosition: Position3D): void {
+        if (typeof newPosition.x === 'number' && !isNaN(newPosition.x) &&
+              typeof newPosition.y === 'number' && !isNaN(newPosition.y) &&
+              typeof newPosition.z === 'number' && !isNaN(newPosition.z)) {
+            this.#position = { ...newPosition }; // Store copy, not reference
+        } else {
+            console.warn('Invalid position data provided to setPosition');
+        }
+    }
 }
 
 // Default export for easy importing
