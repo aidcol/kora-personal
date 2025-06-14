@@ -242,4 +242,56 @@ describe('TrackNode', () => {
             expect(node.platformUris.length).toBe(0);
         });
     });
+
+    describe('addPlay', () => {
+        let node: TrackNode;
+
+        beforeEach(() => {
+            node = new TrackNode('test-id', mockMetadata);
+        });
+
+        it('should increment total plays and add play time for valid positive value', () => {
+            node.addPlay(5000);
+            
+            expect(node.totalPlays).toBe(1);
+            expect(node.totalPlayTime).toBe(5000);
+        });
+
+        it('should not modify play data for zero milliseconds', () => {
+            node.addPlay(0);
+            
+            expect(node.totalPlays).toBe(0);
+            expect(node.totalPlayTime).toBe(0);
+        });
+
+        it('should not modify play data for negative values', () => {
+            node.addPlay(-1000);
+            
+            expect(node.totalPlays).toBe(0);
+            expect(node.totalPlayTime).toBe(0);
+        });
+
+        it('should not modify play data for NaN', () => {
+            node.addPlay(NaN);
+            
+            expect(node.totalPlays).toBe(0);
+            expect(node.totalPlayTime).toBe(0);
+        });
+
+        it('should not modify play data for non-number input', () => {
+            node.addPlay('invalid' as any);
+            
+            expect(node.totalPlays).toBe(0);
+            expect(node.totalPlayTime).toBe(0);
+        });
+
+        it('should correctly calculate average after multiple valid plays', () => {
+            node.addPlay(3000);
+            node.addPlay(6000);
+            
+            expect(node.totalPlays).toBe(2);
+            expect(node.totalPlayTime).toBe(9000);
+            expect(node.getAvgPlayDuration()).toBe(4500);
+        });
+    });
 });

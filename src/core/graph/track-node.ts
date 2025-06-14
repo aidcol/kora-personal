@@ -36,7 +36,7 @@ export interface TrackNodeData {
 export class TrackNode {
     public readonly universalId: string;
     public readonly metadata: TrackMetadata;
-    
+
     #platformUris: Set<string>;
     #totalPlays: number = 0;
     #totalPlayTime: number = 0;
@@ -44,7 +44,7 @@ export class TrackNode {
 
     constructor(universalId: string, metadata: TrackMetadata) {
         this.universalId = universalId;
-        
+
         // Create a defensive copy and fill in defaults for missing fields
         this.metadata = {
           artist: metadata.artist || 'Unknown Artist',
@@ -88,7 +88,7 @@ export class TrackNode {
 
     /**
      * Add a platform URI with input validation
-     * 
+     *
      * Optional parameter with union type string | null | undefined
      */
     addPlatformUri(platformUri: string | null | undefined): void {
@@ -96,7 +96,20 @@ export class TrackNode {
             this.#platformUris.add(platformUri);
         }
     }
-}   
+
+    /**
+     * Record a play of this track
+     *
+     * Parameter types:
+     * - msPlayed: number = 0 - optional milliseconds played for this instance
+     */
+    addPlay(msPlayed: number): void {
+        if (typeof msPlayed === 'number' && msPlayed > 0 && !isNaN(msPlayed)) {
+            this.#totalPlays++;
+            this.#totalPlayTime += msPlayed;
+        }
+    }
+}
 
 // Default export for easy importing
 export default TrackNode;
