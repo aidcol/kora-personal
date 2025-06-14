@@ -17,21 +17,6 @@ export interface Position3D {
     z: number;
 }
 
-/**
- * Serializable representation of a TrackNode for JSON export/import
- * This interface defines exactly what data gets saved/loaded
- */
-export interface TrackNodeData {
-    id: string;
-    metadata: TrackMetadata;
-    totalPlays: number;
-    totalPlayTime: number;
-    avgPlayDuration: number;
-    sessionCount: number;
-    platformUris: string[];
-    position: Position3D;
-}
-
 /** Individual track data structure for the music graph. */
 export class TrackNode {
     public readonly universalId: string;
