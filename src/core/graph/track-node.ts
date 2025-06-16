@@ -7,7 +7,7 @@
  * play statistics, platform URIs, and 3D positioning for visualization.
  */
 
-import { TrackMetadata } from '../track-identifier.js';
+import { TrackMetadata } from '../track-identifier.ts';
 
 /**
  * 3D position coordinates for visualization in the music graph.
