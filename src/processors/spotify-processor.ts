@@ -86,11 +86,15 @@ export class SpotifyStreamingHistoryProcessor {
      * @returns Promise that resolves to an array of SpotifyStreamingHistoryEntry
      * objects for valid songs
      */
-    async processStreamingHistoryFile(filePath: string): Promise<SpotifyStreamingHistoryEntry[]> {
+    async processStreamingHistoryFile(
+        filePath: string
+    ): Promise<SpotifyStreamingHistoryEntry[]> {
         const fileContent = await Deno.readTextFile(filePath);
-        const rawEntries: SpotifyStreamingHistoryEntry[] = JSON.parse(fileContent);
+        const rawEntries: SpotifyStreamingHistoryEntry[] = 
+            JSON.parse(fileContent);
         
-        // Filter entries to only include valid song data (must have spotify_track_uri)
+        // Filter entries to only include valid song data
+        // (must have spotify_track_uri)
         return rawEntries.filter(entry => 
             entry.spotify_track_uri && 
             entry.spotify_track_uri.startsWith('spotify:track:')
@@ -102,7 +106,9 @@ export class SpotifyStreamingHistoryProcessor {
      * @param entries - Array of SpotifyStreamingHistoryEntry objects
      * @returns Array of TrackPlay objects
      */
-    private convertToTrackPlays(entries: SpotifyStreamingHistoryEntry[]): TrackPlay[] {
+    private convertToTrackPlays(
+        entries: SpotifyStreamingHistoryEntry[]
+    ): TrackPlay[] {
         return entries.map(entry => {
             const metadata: TrackMetadata = {
                 title: entry.master_metadata_track_name || '',
@@ -112,7 +118,8 @@ export class SpotifyStreamingHistoryProcessor {
 
             return {
                 timestamp: new Date(entry.ts).getTime(),
-                universalId: UniversalTrackIdentifier.generateTrackId(metadata),
+                universalId: UniversalTrackIdentifier
+                    .generateTrackId(metadata),
                 metadata,
                 platformUri: entry.spotify_track_uri!,
                 msPlayed: entry.ms_played || 0
