@@ -12,6 +12,8 @@
  * fashion.
  */
 
+import { UniversalTrackIdentifier, TrackMetadata } from '../core/track-identifier.ts';
+
 /**
  * Raw Spotify streaming entry structure from JSON export of "Extended
  * Streaming History." See the following link for more information:
@@ -54,6 +56,25 @@ export interface SpotifyStreamingHistoryEntry {
 }
 
 /**
+ * Track play data after processing Spotify entry.
+ * 
+ * This is interface provides a platform-agnostic format as an intermediary 
+ * between the file I/O and the creation of TrackNode objects.
+ */
+export interface TrackPlay {
+  /** Timestamp when track stopped playing in UTC format: "YYYY-MM-DD HH:MM:SS" */
+  timestamp: number;
+  /** Universal track identifier */
+  universalId: string;
+  /** Track metadata */
+  metadata: TrackMetadata;
+  /** Original platform URI */
+  platformUri: string;
+  /** Milliseconds played (>= 0), msPlayed=0 indicates a skipped track */
+  msPlayed: number;
+}
+
+/**
  * Processor for the Extended Streaming History JSON data from Spotify.
  */
 export class SpotifyStreamingHistoryProcessor {
@@ -74,5 +95,28 @@ export class SpotifyStreamingHistoryProcessor {
             entry.spotify_track_uri && 
             entry.spotify_track_uri.startsWith('spotify:track:')
         );
+    }
+
+    /**
+     * Converts Spotify streaming history entries to TrackPlay objects
+     * @param entries - Array of SpotifyStreamingHistoryEntry objects
+     * @returns Array of TrackPlay objects
+     */
+    private convertToTrackPlays(entries: SpotifyStreamingHistoryEntry[]): TrackPlay[] {
+        return entries.map(entry => {
+            const metadata: TrackMetadata = {
+                title: entry.master_metadata_track_name || '',
+                artist: entry.master_metadata_album_artist_name || '',
+                album: entry.master_metadata_album_album_name || ''
+            };
+
+            return {
+                timestamp: new Date(entry.ts).getTime(),
+                universalId: UniversalTrackIdentifier.generateTrackId(metadata),
+                metadata,
+                platformUri: entry.spotify_track_uri!,
+                msPlayed: entry.ms_played || 0
+            };
+        });
     }
 }
