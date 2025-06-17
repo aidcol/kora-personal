@@ -52,3 +52,27 @@ export interface SpotifyStreamingHistoryEntry {
   /** Whether played in incognito mode */
   incognito_mode?: boolean | null;
 }
+
+/**
+ * Processor for the Extended Streaming History JSON data from Spotify.
+ */
+export class SpotifyStreamingHistoryProcessor {
+
+    /**
+     * Processes a Spotify streaming history JSON file and returns an array of 
+     * valid song entries.
+     * @param filePath - Path to the JSON file containing streaming history
+     * @returns Promise that resolves to an array of SpotifyStreamingHistoryEntry
+     * objects for valid songs
+     */
+    async processStreamingHistoryFile(filePath: string): Promise<SpotifyStreamingHistoryEntry[]> {
+        const fileContent = await Deno.readTextFile(filePath);
+        const rawEntries: SpotifyStreamingHistoryEntry[] = JSON.parse(fileContent);
+        
+        // Filter entries to only include valid song data (must have spotify_track_uri)
+        return rawEntries.filter(entry => 
+            entry.spotify_track_uri && 
+            entry.spotify_track_uri.startsWith('spotify:track:')
+        );
+    }
+}
