@@ -6,7 +6,7 @@ dist/
 build/
 
 # Coverage reports
-coverage/
+cov_profile/
 
 # Logs
 *.log
